@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">THHMusic</string>
+    <string name="title_online">Online</string>
+    <string name="title_offline">Cá nhân</string>
+    <string name="title_allmusic">All Music</string>
+    <string name="title_allaudio">All Audio</string>
+    <string name="title_alternativerock">Alternativerock</string>
+    <string name="title_ambient">Ambient</string>
+    <string name="title_classical">Classical</string>
+    <string name="title_country">Country</string>
+    <string name="title_more">Thêm</string>
+    <string name="title_allsong">All Song</string>
+    <string name="title_album">Album</string>
+    <string name="title_artist">Album</string>
 </resources>

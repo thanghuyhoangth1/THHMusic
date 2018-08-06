@@ -15,11 +15,19 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends RecyclerView.ViewHol
     protected List<T> mData;
     protected Context mContext;
     protected OnRecyclerViewClickListener<T> mListener;
+    protected LayoutInflater mLayoutInflater;
+
+    public BaseRecyclerViewAdapter(Context context, List<T> data) {
+        mContext = context;
+        mData = data;
+        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
     public BaseRecyclerViewAdapter(Context context, List<T> data, OnRecyclerViewClickListener<T> listener) {
         mContext = context;
         mData = data;
         mListener = listener;
+        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public abstract void addData();
@@ -29,7 +37,9 @@ public abstract class BaseRecyclerViewAdapter<T, VH extends RecyclerView.ViewHol
         vh.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onClick(mData, i);
+                if (mListener != null) {
+                    mListener.onClick(mData, i);
+                }
             }
         });
     }
