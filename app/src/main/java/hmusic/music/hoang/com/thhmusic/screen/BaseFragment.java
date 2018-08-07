@@ -15,7 +15,7 @@ public abstract  class BaseFragment extends Fragment {
         View rootView=inflater.inflate(getResource(),container,false);
         initComps(rootView,savedInstanceState);
         addEvent();
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return rootView;
     }
 
     protected abstract void addEvent();
