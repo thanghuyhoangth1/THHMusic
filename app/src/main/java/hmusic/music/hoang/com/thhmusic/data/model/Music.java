@@ -3,9 +3,13 @@ package hmusic.music.hoang.com.thhmusic.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Music implements Parcelable {
-    private String mTitle;
-    private String mDescription;
+    protected String mImage;
+    protected String mTitle;
+    protected String mDescription;
 
     public Music() {
     }
