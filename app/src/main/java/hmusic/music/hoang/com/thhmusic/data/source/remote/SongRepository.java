@@ -1,9 +1,9 @@
 package hmusic.music.hoang.com.thhmusic.data.source.remote;
 
-import java.util.List;
-
-import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.source.SongDataSource;
+import hmusic.music.hoang.com.thhmusic.data.source.remote.api.BaseResponse;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 
 public class SongRepository implements SongDataSource.Remote {
     private SongRemoteDataSource mSongRemoteDataSource;
@@ -13,7 +13,7 @@ public class SongRepository implements SongDataSource.Remote {
     }
 
     @Override
-    public List<Track> getTracs() {
-        return mSongRemoteDataSource.getTracs();
+    public Observable<BaseResponse> getTracks(String kind, String genre, String clienID, int limit, int offset) {
+        return mSongRemoteDataSource.getTracks(kind, genre, clienID, limit, offset);
     }
 }
