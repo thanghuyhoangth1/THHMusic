@@ -4,8 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Music implements Parcelable {
-    private String mTitle;
-    private String mDescription;
+    protected String mImage;
+    protected String mTitle;
+    protected String mDescription;
 
     public Music() {
     }
