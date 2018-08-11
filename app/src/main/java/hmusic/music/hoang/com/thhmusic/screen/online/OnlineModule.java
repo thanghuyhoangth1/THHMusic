@@ -14,9 +14,8 @@ public class OnlineModule {
     @FragmentScope
     @Provides
     public OnlineFragmentContract.Presenter providePresenter(SongRepository songRepository,
-                                                             CompositeDisposable compositeDisposable,
                                                              BaseSchedulerProvider baseSchedulerProvider) {
-        return new OnlinePresenter(songRepository, compositeDisposable, baseSchedulerProvider);
+        return new OnlinePresenter(songRepository, baseSchedulerProvider);
     }
 
     @FragmentScope
@@ -24,11 +23,4 @@ public class OnlineModule {
     public SongRepository proviSongRepository(SongRemoteDataSource remote) {
         return new SongRepository(remote);
     }
-
-    @ActivityScope
-    @Provides
-    public CompositeDisposable providerCompositeDisposable() {
-        return new CompositeDisposable();
-    }
-
 }
