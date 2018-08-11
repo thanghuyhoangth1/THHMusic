@@ -9,6 +9,16 @@ public class User {
     private String mAvatarUrl;
     @Expose
     @SerializedName("username")
+    private String mArtistKey;
+
+    public String getArtistKey() {
+        return mArtistKey;
+    }
+
+    public void setArtistKey(String artistKey) {
+        mArtistKey = artistKey;
+    }
+
     private String mArtist;
 
     public User() {

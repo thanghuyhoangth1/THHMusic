@@ -1,15 +1,21 @@
 package hmusic.music.hoang.com.thhmusic.data.source;
 
+import android.content.Context;
+
+import java.util.List;
+
+import hmusic.music.hoang.com.thhmusic.data.model.Artist;
+import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.source.remote.api.BaseResponse;
 import io.reactivex.Observable;
 
 public interface SongDataSource {
     interface Local {
-        void getAllMusic();
+        Observable<List<Track>> getAllMusic(Context context);
 
         void getAllAlbum();
 
-        void getAllArtist();
+        Observable<List<Artist>> getAllArtist(Context context);
     }
 
     interface Remote {
