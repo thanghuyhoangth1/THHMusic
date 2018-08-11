@@ -5,7 +5,7 @@ import android.os.Parcel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Track extends Music {
+public class Track {
     @Expose
     @SerializedName("uri")
     private String mURI;
@@ -30,23 +30,12 @@ public class Track extends Music {
     @SerializedName("user")
     private User mUser;
 
-    public Track() {
-    }
-
     public String getURI() {
         return mURI;
     }
 
     public void setURI(String URI) {
         mURI = URI;
-    }
-
-    public Track(String title, String description) {
-        super(title, description);
-    }
-
-    public Track(Parcel in) {
-        super(in);
     }
 
     public String getImage() {
@@ -89,12 +78,10 @@ public class Track extends Music {
         mFullDuration = fullDuration;
     }
 
-    @Override
     public String getTitle() {
         return mTitle;
     }
 
-    @Override
     public void setTitle(String title) {
         mTitle = title;
     }
@@ -107,8 +94,7 @@ public class Track extends Music {
         mUser = user;
     }
 
-    @Override
-    public String getDescription() {
-        return mUser.getArtist();
+    public Track() {
+
     }
 }
