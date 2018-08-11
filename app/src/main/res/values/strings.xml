@@ -11,5 +11,6 @@
     <string name="title_more">Thêm</string>
     <string name="title_allsong">All Song</string>
     <string name="title_album">Album</string>
-    <string name="title_artist">Album</string>
+    <string name="title_artist">Artis</string>
+
 </resources>
