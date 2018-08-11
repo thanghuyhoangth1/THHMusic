@@ -7,8 +7,7 @@ public class User {
     @Expose
     @SerializedName("avatar_url")
     private String mAvatarUrl;
-    @Expose
-    @SerializedName("username")
+
     private String mArtistKey;
 
     public String getArtistKey() {
@@ -19,6 +18,8 @@ public class User {
         mArtistKey = artistKey;
     }
 
+    @Expose
+    @SerializedName("username")
     private String mArtist;
 
     public User() {
