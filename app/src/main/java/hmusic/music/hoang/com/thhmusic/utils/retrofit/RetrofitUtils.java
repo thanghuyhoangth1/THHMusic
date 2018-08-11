@@ -15,6 +15,7 @@ public class RetrofitUtils {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
+
         return retrofi.create(Api.class);
     }
 }
