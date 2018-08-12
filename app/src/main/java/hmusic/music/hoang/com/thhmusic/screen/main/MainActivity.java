@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -21,12 +22,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ViewPager mViewPager;
     private ImageView mImageSearch;
     private Toolbar mToolbar;
-
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private View mBottomSheetCollapsedView;
+    private ImageView mImageDownload;
+    private ImageView mImageShare;
+    private ImageView mImagePrevious;
+    private ImageView mImageNext;
+    private ImageView mImagePlayPause;
 
     @Override
     protected void addEvent() {
         mImageSearch.setOnClickListener(this);
+        mBottomSheetCollapsedView.setOnClickListener(this);
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View view, int i) {
+                switch (i) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        handleCollapsedState();
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        handleExpandedState();
+                        break;
+                }
+            }
 
+            @Override
+            public void onSlide(@NonNull View view, float v) {
+
+            }
+        });
+    }
+
+    private void handleExpandedState() {
+        mImagePlayPause.setVisibility(View.GONE);
+        mImagePrevious.setVisibility(View.GONE);
+        mImageNext.setVisibility(View.GONE);
+        mImageDownload.setVisibility(View.VISIBLE);
+        mImageShare.setVisibility(View.VISIBLE);
+
+    }
+
+    private void handleCollapsedState() {
+        mImagePlayPause.setVisibility(View.VISIBLE);
+        mImagePrevious.setVisibility(View.VISIBLE);
+        mImageNext.setVisibility(View.VISIBLE);
+        mImageDownload.setVisibility(View.GONE);
+        mImageShare.setVisibility(View.GONE);
     }
 
     @Override
@@ -70,12 +112,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mTabLayout = findViewById(R.id.tabs);
         mViewPager = findViewById(R.id.viewpager);
         mImageSearch = findViewById(R.id.image_search);
+        mImageDownload = findViewById(R.id.image_download);
+        mImageShare = findViewById(R.id.image_share);
+        mImageNext = findViewById(R.id.image_next);
+        mImagePrevious = findViewById(R.id.image_previous);
+        mImagePlayPause = findViewById(R.id.image_play_pause);
+        mBottomSheetCollapsedView = findViewById(R.id.bottom_sheet);
         mToolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(mToolbar);
 
         MainAdapter mainAdapter = new MainAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mainAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetCollapsedView);
+        mBottomSheetBehavior.setPeekHeight(210);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     @Override
@@ -88,6 +139,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.image_search:
                 break;
+            case R.id.bottom_sheet:
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                break;
         }
     }
+
+
 }
