@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.List;
 
+import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.source.remote.api.BaseResponse;
@@ -13,7 +14,8 @@ public interface SongDataSource {
     interface Local {
         Observable<List<Track>> getAllMusic(Context context);
 
-        void getAllAlbum();
+        Observable<List<Album>> getAllAlbum(Context con
+        );
 
         Observable<List<Artist>> getAllArtist(Context context);
     }

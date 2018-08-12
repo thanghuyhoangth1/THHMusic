@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.List;
 
+import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.source.SongDataSource;
@@ -31,8 +32,8 @@ public class SongRepository implements SongDataSource.Remote, SongDataSource.Loc
     }
 
     @Override
-    public void getAllAlbum() {
-
+    public Observable<List<Album>> getAllAlbum(Context context) {
+        return mSongLocalDataSource.getAllAlbum(context);
     }
 
     @Override

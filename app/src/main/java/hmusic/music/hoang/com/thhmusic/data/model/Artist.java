@@ -6,8 +6,17 @@ import java.util.List;
 public class Artist {
     private String mName;
     private int mCountTrack;
-    private List<Track> mListTrack = new ArrayList<>();
     private String mArtistKey;
+
+    public String getArtisArt() {
+        return ArtisArt;
+    }
+
+    public void setArtisArt(String artisArt) {
+        ArtisArt = artisArt;
+    }
+
+    private String ArtisArt;
 
     public String getArtistKey() {
         return mArtistKey;
@@ -34,20 +43,5 @@ public class Artist {
 
     public void setCountTrack(int countTrack) {
         mCountTrack = countTrack;
-    }
-
-    public List<Track> getListTrack() {
-        return mListTrack;
-    }
-
-    public void setListTrack(List<Track> listTrack) {
-        mListTrack = listTrack;
-    }
-
-    public Artist(String name, int countTrack, List<Track> listTrack) {
-
-        mName = name;
-        mCountTrack = countTrack;
-        mListTrack = listTrack;
     }
 }
