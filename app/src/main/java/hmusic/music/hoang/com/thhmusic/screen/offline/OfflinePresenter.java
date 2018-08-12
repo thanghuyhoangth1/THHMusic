@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.List;
 
+import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.source.remote.SongRepository;
@@ -60,12 +61,39 @@ public class OfflinePresenter implements OfflineContract.Presenter {
                 .subscribe(new Consumer<List<Artist>>() {
                     @Override
                     public void accept(List<Artist> list) throws Exception {
-
+                        mView.hideProgressBar();
+                        mView.showAllArtis(list);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.d("kiemtra", throwable.getMessage());
+                        mView.showError(throwable);
+                        mView.hideProgressBar();
+                    }
+                });
+        mCompositeDisposable.add(disposable);
+    }
+
+    @Override
+    public void getAllAlbum(Context context) {
+        Disposable disposable = mSongRepository.getAllAlbum(context)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        mView.showProgressBar();
+                    }
+                }).subscribe(new Consumer<List<Album>>() {
+                    @Override
+                    public void accept(List<Album> list) throws Exception {
+                        mView.hideProgressBar();
+                        mView.showAllAlbum(list);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        mView.showError(throwable);
                     }
                 });
     }

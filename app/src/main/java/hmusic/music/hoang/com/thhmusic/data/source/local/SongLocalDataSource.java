@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.source.SongDataSource;
@@ -23,8 +24,8 @@ public class SongLocalDataSource implements SongDataSource.Local {
     }
 
     @Override
-    public void getAllAlbum() {
-
+    public Observable<List<Album>> getAllAlbum(Context context) {
+        return Observable.just(MusicUtils.getAllAlbum(context));
     }
 
     @Override

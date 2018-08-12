@@ -9,18 +9,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import hmusic.music.hoang.com.thhmusic.R;
-import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.screen.BaseRecyclerViewAdapter;
 import hmusic.music.hoang.com.thhmusic.screen.OnRecyclerViewClickListener;
 
-public class AlbumAdapter extends BaseRecyclerViewAdapter<Album, AlbumAdapter.ViewHolder> {
-
-
-    public AlbumAdapter(Context context, List<Album> data, OnRecyclerViewClickListener<Album> listener) {
+public class ArtistAdapter extends BaseRecyclerViewAdapter<Artist, ArtistAdapter.ViewHolder> {
+    public ArtistAdapter(Context context, List<Artist> data, OnRecyclerViewClickListener<Artist> listener) {
         super(context, data, listener);
     }
 
@@ -32,8 +31,8 @@ public class AlbumAdapter extends BaseRecyclerViewAdapter<Album, AlbumAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = mLayoutInflater.inflate(R.layout.item_music, viewGroup, false);
-        return new ViewHolder(view);
+        View itemView = mLayoutInflater.inflate(R.layout.item_music, viewGroup, false);
+        return new ViewHolder(itemView);
     }
 
     @Override
@@ -54,12 +53,15 @@ public class AlbumAdapter extends BaseRecyclerViewAdapter<Album, AlbumAdapter.Vi
             textDescription = itemView.findViewById(R.id.text_description);
         }
 
-        public void bindData(List<Album> data, int i) {
-            if (data.get(i).getAlbumArt() != null) {
-                imageAvatar.setImageURI(Uri.parse(data.get(i).getAlbumArt()));
-            } else imageAvatar.setImageResource(R.drawable.ic_launcher);
-            tetTitle.setText(data.get(i).getName());
-            textDescription.setText(data.get(i).getNumberOfTrack() + "");
+        public void bindData(List<Artist> data, int i) {
+            Artist value = data.get(i);
+            tetTitle.setText(value.getName());
+            textDescription.setText(value.getCountTrack() + "");
+            if (value.getArtisArt() != null) {
+                imageAvatar.setImageURI(Uri.parse(value.getArtisArt()));
+            } else {
+                imageAvatar.setImageResource(R.drawable.ic_launcher);
+            }
         }
     }
 }

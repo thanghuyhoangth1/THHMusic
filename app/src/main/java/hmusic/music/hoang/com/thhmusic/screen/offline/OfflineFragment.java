@@ -13,10 +13,13 @@ import javax.inject.Inject;
 
 import hmusic.music.hoang.com.thhmusic.MainApplication;
 import hmusic.music.hoang.com.thhmusic.R;
+import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.screen.BaseFragment;
 import hmusic.music.hoang.com.thhmusic.screen.OnRecyclerViewClickListener;
+import hmusic.music.hoang.com.thhmusic.screen.offline.adapter.AlbumAdapter;
+import hmusic.music.hoang.com.thhmusic.screen.offline.adapter.ArtistAdapter;
 import hmusic.music.hoang.com.thhmusic.screen.online.adapter.TrackAdapter;
 
 public class OfflineFragment extends BaseFragment implements OfflineContract.View,
@@ -47,6 +50,7 @@ public class OfflineFragment extends BaseFragment implements OfflineContract.Vie
         mPresenter.setView(this);
         mPresenter.getAllSong(getActivity());
         mPresenter.getAllArtist(getActivity());
+        mPresenter.getAllAlbum(getActivity());
     }
 
     @Override
@@ -80,7 +84,18 @@ public class OfflineFragment extends BaseFragment implements OfflineContract.Vie
 
     @Override
     public void showAllArtis(List<Artist> list) {
+        ArtistAdapter artistAdapter = new ArtistAdapter(getActivity(), list, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerArtist.setLayoutManager(layoutManager);
+        mRecyclerArtist.setAdapter(artistAdapter);
+    }
 
+    @Override
+    public void showAllAlbum(List<Album> list) {
+        AlbumAdapter albumAdapter = new AlbumAdapter(getActivity(), list, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerAlbum.setAdapter(albumAdapter);
+        mRecyclerAlbum.setLayoutManager(layoutManager);
     }
 
     @Override
