@@ -1,11 +1,12 @@
 package hmusic.music.hoang.com.thhmusic.data.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Track {
+public class Track implements Parcelable {
     @Expose
     @SerializedName("uri")
     private String mURI;
@@ -29,6 +30,28 @@ public class Track {
     @Expose
     @SerializedName("user")
     private User mUser;
+
+    protected Track(Parcel in) {
+        mURI = in.readString();
+        mImage = in.readString();
+        mIsDownloadable = in.readByte() != 0;
+        mDownloadUrl = in.readString();
+        mDuration = in.readLong();
+        mFullDuration = in.readLong();
+        mTitle = in.readString();
+    }
+
+    public static final Creator<Track> CREATOR = new Creator<Track>() {
+        @Override
+        public Track createFromParcel(Parcel in) {
+            return new Track(in);
+        }
+
+        @Override
+        public Track[] newArray(int size) {
+            return new Track[size];
+        }
+    };
 
     public String getURI() {
         return mURI;
@@ -96,5 +119,21 @@ public class Track {
 
     public Track() {
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mURI);
+        parcel.writeString(mImage);
+        parcel.writeByte((byte) (mIsDownloadable ? 1 : 0));
+        parcel.writeString(mDownloadUrl);
+        parcel.writeLong(mDuration);
+        parcel.writeLong(mFullDuration);
+        parcel.writeString(mTitle);
     }
 }

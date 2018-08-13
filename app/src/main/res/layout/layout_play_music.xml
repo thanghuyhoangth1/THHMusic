@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_tudora">
@@ -10,6 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_60"
         android:background="@color/color_mine_shaft"
+        android:fitsSystemWindows="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,6 +28,7 @@
 
         <TextView
             android:id="@+id/text_title"
+            android:maxLines="1"
             android:layout_width="@dimen/dp_170"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
@@ -63,7 +66,7 @@
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_5"
-            android:src="@drawable/ic_pause"
+            android:src="@drawable/ic_play"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/image_previous"
             app:layout_constraintTop_toTopOf="@id/image_previous" />
@@ -129,6 +132,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/image_favorite"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_10"
