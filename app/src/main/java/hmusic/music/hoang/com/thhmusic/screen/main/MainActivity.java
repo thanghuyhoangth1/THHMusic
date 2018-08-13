@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mViewPager.setAdapter(mainAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetCollapsedView);
-        mBottomSheetBehavior.setPeekHeight(210);
+        mBottomSheetBehavior.setPeekHeight(180);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
