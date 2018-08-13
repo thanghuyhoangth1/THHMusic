@@ -116,4 +116,8 @@ public class MusicUtils {
         }
         return albums;
     }
+
+    public static String createUri(String uri) {
+        return uri + "/stream?client_id=a7Ucuq0KY8Ksn8WzBG6wj4x6pcId6BpU";
+    }
 }

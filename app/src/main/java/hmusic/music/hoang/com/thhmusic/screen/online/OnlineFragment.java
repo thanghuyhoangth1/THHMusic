@@ -1,5 +1,6 @@
 package hmusic.music.hoang.com.thhmusic.screen.online;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,9 @@ import hmusic.music.hoang.com.thhmusic.R;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.screen.BaseFragment;
 import hmusic.music.hoang.com.thhmusic.screen.OnRecyclerViewClickListener;
+import hmusic.music.hoang.com.thhmusic.screen.main.MainActivity;
 import hmusic.music.hoang.com.thhmusic.screen.online.adapter.TrackAdapter;
+import hmusic.music.hoang.com.thhmusic.service.PlayMusicService;
 
 public class OnlineFragment extends BaseFragment implements OnlineFragmentContract.View,
         OnRecyclerViewClickListener<Track> {
@@ -28,7 +31,7 @@ public class OnlineFragment extends BaseFragment implements OnlineFragmentContra
     private RecyclerView mRecyclerClassical;
     private RecyclerView mRecyclerCountry;
     private ProgressBar mProgressBar;
-
+    private MainActivity mParentActivity;
     @Inject
     OnlineFragmentContract.Presenter mPresenter;
 
@@ -46,7 +49,7 @@ public class OnlineFragment extends BaseFragment implements OnlineFragmentContra
         mRecyclerClassical = rootView.findViewById(R.id.recycler_clasical);
         mRecyclerCountry = rootView.findViewById(R.id.recycler_country);
         mProgressBar = rootView.findViewById(R.id.progressbar);
-
+        getParentActivity();
         DaggerOnlineComponent.builder()
                 .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
                 .onlineModule(new OnlineModule())
@@ -76,7 +79,15 @@ public class OnlineFragment extends BaseFragment implements OnlineFragmentContra
 
     @Override
     public void onClick(List<Track> list, int pos) {
-        Log.d("kiemtra", list.get(pos).getTitle());
+        Intent intent = new Intent(getActivity(), PlayMusicService.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PlayMusicService.INTENT_TRACK, list.get(pos));
+        bundle.putInt(PlayMusicService.INTENT_POSITION_TRACK, pos);
+        intent.putExtras(bundle);
+        getActivity().startService(intent);
+        if (mParentActivity != null) {
+            mParentActivity.setMusicPlayList(list);
+        }
     }
 
     @Override
@@ -122,5 +133,13 @@ public class OnlineFragment extends BaseFragment implements OnlineFragmentContra
     @Override
     public void showCountry(List<Track> tracks) {
         setupRecyclerView(mRecyclerCountry, tracks);
+    }
+
+    public void getParentActivity() {
+        try {
+            mParentActivity = (MainActivity) getActivity();
+        } catch (ClassCastException e) {
+
+        }
     }
 }
