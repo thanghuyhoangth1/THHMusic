@@ -76,6 +76,7 @@ public class OnlinePresenter implements OnlineFragmentContract.Presenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+
                         mView.showError(throwable);
                         mView.hideProgressbar();
                     }
@@ -256,6 +257,7 @@ public class OnlinePresenter implements OnlineFragmentContract.Presenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        Log.d("kiemtraerro", mView + "");
                         mView.showError(throwable);
                         mView.hideProgressbar();
                     }

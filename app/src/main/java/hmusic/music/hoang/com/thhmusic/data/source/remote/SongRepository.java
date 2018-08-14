@@ -27,6 +27,11 @@ public class SongRepository implements SongDataSource.Remote, SongDataSource.Loc
     }
 
     @Override
+    public Observable<List<Track>> searchTrack(String query) {
+        return mSongRemoteDataSource.searchTrack(query);
+    }
+
+    @Override
     public Observable<List<Track>> getAllMusic(Context context) {
         return mSongLocalDataSource.getAllMusic(context);
     }

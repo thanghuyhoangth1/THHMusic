@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,6 +27,7 @@ import hmusic.music.hoang.com.thhmusic.R;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.screen.BaseActivity;
 import hmusic.music.hoang.com.thhmusic.screen.main.adapter.MainAdapter;
+import hmusic.music.hoang.com.thhmusic.screen.search.SearchFragment;
 import hmusic.music.hoang.com.thhmusic.service.MusicListener;
 import hmusic.music.hoang.com.thhmusic.service.PlayMusicService;
 import hmusic.music.hoang.com.thhmusic.utils.constants.MusicUtils;
@@ -201,6 +203,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_search:
+                handleSearch();
                 break;
             case R.id.bottom_sheet:
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -231,6 +234,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
                 handleRepeatClick();
                 break;
         }
+    }
+
+    private void handleSearch() {
+        SearchFragment searchFragment = new SearchFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.constrain_main, searchFragment);
+        fragmentTransaction.addToBackStack("");
+        fragmentTransaction.commit();
     }
 
     private void handleRepeatClick() {
