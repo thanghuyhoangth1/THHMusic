@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         mImageSuffe.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
         mImageLoop.setOnClickListener(this);
+        mImageDownload.setOnClickListener(this);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
@@ -233,6 +234,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
             case R.id.image_repeat:
                 handleRepeatClick();
                 break;
+            case R.id.image_download:
+                handleDownload();
+                break;
+        }
+    }
+
+    private void handleDownload() {
+        if (!mIsBound) {
+            return;
+        }
+        if (mPlayMusicService.getCurrentTrack() == null) {
+            Toast.makeText(this, getString(R.string.msg_not_track_selected), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mPlayMusicService.getCurrentTrack().isDownloadable()) {
+
+        } else {
+            Toast.makeText(this, "Bài hát này hiện chưa thể download vì vấn đề bản quyền", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -302,6 +321,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
         mTextArtist.setText(track.getUser().getArtist());
         mTextEndTime.setText(MusicUtils.converDuration(mPlayMusicService.getDuration()));
         mSeekBar.setMax(mPlayMusicService.getDuration());
+        if (track.isDownloadable()) {
+            mImageDownload.setImageResource(R.drawable.ic_download);
+        } else {
+            mImageDownload.setImageResource(R.drawable.ic_download_gray);
+        }
         updateSeekBar();
     }
 
@@ -363,6 +387,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,
             mTextTitle.setText(track.getTitle());
             mTextArtist.setText(track.getUser().getArtist());
             mTextEndTime.setText(MusicUtils.converDuration(mPlayMusicService.getDuration()));
+            if (track.isDownloadable()) {
+                mImageDownload.setImageResource(R.drawable.ic_download);
+            } else {
+                mImageDownload.setImageResource(R.drawable.ic_download_gray);
+            }
         }
         switch (state) {
             case PlayMusicService.MUSIC_STATE_PLAYING:

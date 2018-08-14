@@ -133,6 +133,10 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
         }
     }
 
+    public Track getCurrentTrack() {
+        return mPlayList != null ? mPlayList.get(mPositionTrack) : null;
+    }
+
     private void handleLoopNextAll() {
         if (mPlayList == null) return;
         mPositionTrack++;
