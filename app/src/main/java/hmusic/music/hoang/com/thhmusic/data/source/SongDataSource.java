@@ -22,5 +22,8 @@ public interface SongDataSource {
 
     interface Remote {
         Observable<BaseResponse> getTracks(String kind, String genre, String clienID, int limit, int offset);
+
+        Observable<List<Track>> searchTrack(String query);
+
     }
 }

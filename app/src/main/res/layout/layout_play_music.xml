@@ -97,8 +97,9 @@
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_10"
             android:src="@drawable/ic_share"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/image_download"
-            app:layout_constraintTop_toTopOf="@id/image_download" />
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <ImageView

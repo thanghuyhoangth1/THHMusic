@@ -8,10 +8,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitUtils {
     public static final String BASE_URL = "https://api-v2.soundcloud.com";
+    public static final String BASE_URL_SEARCH = "http://api.soundcloud.com";
 
     public static Api getRetrofit() {
         Retrofit retrofi = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+
+        return retrofi.create(Api.class);
+    }
+
+    public static Api getRetrofitSearch() {
+        Retrofit retrofi = new Retrofit.Builder()
+                .baseUrl(BASE_URL_SEARCH)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
