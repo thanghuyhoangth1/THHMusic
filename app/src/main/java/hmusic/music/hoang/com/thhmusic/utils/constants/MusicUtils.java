@@ -13,8 +13,6 @@ import hmusic.music.hoang.com.thhmusic.data.model.Album;
 import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.data.model.User;
-import hmusic.music.hoang.com.thhmusic.screen.offline.adapter.AlbumAdapter;
-import io.reactivex.internal.operators.flowable.FlowableOnErrorReturn;
 
 public class MusicUtils {
     public static String createQueryGenre(String genre) {
@@ -119,5 +117,24 @@ public class MusicUtils {
 
     public static String createUri(String uri) {
         return uri + "/stream?client_id=a7Ucuq0KY8Ksn8WzBG6wj4x6pcId6BpU";
+    }
+
+    public static String converDuration(int duration) {
+        int secDuration = duration / 1000;
+        int min = secDuration / 60;
+        int sec = secDuration % 60;
+        String minString = "";
+        String secString = "";
+        if (min < 10) {
+            minString = "0" + min;
+        } else {
+            minString = min + "";
+        }
+        if (sec < 10) {
+            secString = "0" + sec;
+        } else {
+            secString = sec + "";
+        }
+        return minString + ":" + secString;
     }
 }

@@ -28,7 +28,6 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_PREVIOUS = "previous";
     public static final String ACTION_STOP = "stop";
-    public static final String BUNDLE_PLAY_MUSIC = "playmusic";
     public static final String INTENT_TRACK = "track";
     public static final String INTENT_POSITION_TRACK = "positiontrack";
     public static final String MUSIC_STATE_PLAYING = "stateplay";
@@ -41,12 +40,16 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
     private int mPositionTrack;
     private MusicListener mMusicListener;
     private IBinder mIBinder = new LocalBinder();
-    private String mPlayMode;
+    private String mPlayLoopMode;
+    private boolean mIsShufferMode;
 
 
     @Override
     public void onCreate() {
         mMediaPlayer = new MediaPlayer();
+        mIsShufferMode = false;
+        mPlayLoopMode = PLAY_MODE_LOOP_ALL;
+        mState = MUSIC_STATE_STOPPING;
         super.onCreate();
     }
 
@@ -110,8 +113,37 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
     }
 
     public void next() {
+        switch (mPlayLoopMode) {
+            case PLAY_MODE_LOOP_1:
+                handleNextLoop1();
+                break;
+            case PLAY_MODE_LOOP_ALL:
+                handleLoopNextAll();
+                break;
+            case PLAY_MODE_NON_LOOP:
+                handleNextNonLoop();
+                break;
+        }
+
+    }
+
+    private void handleNextNonLoop() {
+        if (mPositionTrack == (mPlayList.size() - 1)) {
+            stopMusic();
+        }
+    }
+
+    private void handleLoopNextAll() {
         if (mPlayList == null) return;
         mPositionTrack++;
+        if (mPositionTrack == mPlayList.size()) {
+            mPositionTrack = 0;
+        }
+        playMusic(mPlayList.get(mPositionTrack));
+
+    }
+
+    private void handleNextLoop1() {
         playMusic(mPlayList.get(mPositionTrack));
     }
 
@@ -119,6 +151,11 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
         if (mPlayList == null) return;
         mPositionTrack--;
         playMusic(mPlayList.get(mPositionTrack));
+    }
+
+    void stopMusic() {
+        stopSelf();
+        stopForeground(true);
     }
 
     private Notification getNotification() {
@@ -133,27 +170,53 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
     }
 
     public void bindSuccess() {
-        if (mPlayList == null) return;
-        mMusicListener.onBindSuccess(mPlayList.get(mPositionTrack), mState);
+        if (mPlayList == null) {
+            mMusicListener.onBindSuccess(null, mState, mIsShufferMode, mPlayLoopMode);
+            return;
+        }
+        mMusicListener.onBindSuccess(mPlayList.get(mPositionTrack), mState, mIsShufferMode, mPlayLoopMode);
     }
 
     public String getState() {
         return mState;
     }
 
-    public void setState(String state) {
-        mState = state;
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
     }
 
-    public int getPositionTrack() {
-        return mPositionTrack;
+    public void seek(int pos) {
+        mMediaPlayer.seekTo(pos);
+        mMediaPlayer.start();
+        mMusicListener.onMusicSeek();
+
     }
 
-    public void setPositionTrack(int positionTrack) {
-        mPositionTrack = positionTrack;
+    public int getDuration() {
+        return mMediaPlayer == null ? 0 : mMediaPlayer.getDuration();
+    }
+
+
+    public String getPlayLoopMode() {
+        return mPlayLoopMode;
+    }
+
+    public void setPlayLoopMode(String playLoopMode) {
+        mPlayLoopMode = playLoopMode;
+        mMusicListener.onLoopModeChange(playLoopMode);
+    }
+
+    public boolean isShufferMode() {
+        return mIsShufferMode;
+    }
+
+    public void setShufferMode(boolean shufferMode) {
+        mIsShufferMode = shufferMode;
+        mMusicListener.onShuffleChange(shufferMode);
     }
 
     @Override
+
     public void onPrepared(MediaPlayer mediaPlayer) {
         mMediaPlayer.start();
         mState = MUSIC_STATE_PLAYING;

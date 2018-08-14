@@ -11,5 +11,11 @@ public interface MusicListener {
 
     void onMusicResume();
 
-    void onBindSuccess(Track track, String state);
+    void onBindSuccess(Track track, String state, boolean isShuffe, String loopMode);
+
+    void onShuffleChange(boolean isShuffe);
+
+    void onLoopModeChange(String loopMode);
+
+    void onMusicSeek();
 }
