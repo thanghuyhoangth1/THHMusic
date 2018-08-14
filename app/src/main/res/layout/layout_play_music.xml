@@ -86,6 +86,7 @@
             android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_30"
             android:src="@drawable/ic_download"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/text_title"
             app:layout_constraintTop_toTopOf="parent" />

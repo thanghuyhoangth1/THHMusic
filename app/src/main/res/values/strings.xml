@@ -14,4 +14,6 @@
     <string name="title_artist">Artis</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="title_search_hint">Nhập vào tên bài hát</string>
+    <string name="msg_not_track_selected">Chưa có bài hát nào đượcc chọn</string>
+
 </resources>
