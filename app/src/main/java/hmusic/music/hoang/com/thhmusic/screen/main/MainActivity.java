@@ -5,18 +5,18 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +25,14 @@ import java.util.List;
 import hmusic.music.hoang.com.thhmusic.R;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.screen.BaseActivity;
-import hmusic.music.hoang.com.thhmusic.screen.BaseRecyclerViewAdapter;
 import hmusic.music.hoang.com.thhmusic.screen.main.adapter.MainAdapter;
 import hmusic.music.hoang.com.thhmusic.service.MusicListener;
 import hmusic.music.hoang.com.thhmusic.service.PlayMusicService;
+import hmusic.music.hoang.com.thhmusic.utils.constants.MusicUtils;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, MusicListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener,
+        MusicListener,
+        SeekBar.OnSeekBarChangeListener {
     private ImageView mImageSearch;
     private BottomSheetBehavior mBottomSheetBehavior;
     private View mBottomSheetCollapsedView;
@@ -53,8 +55,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private TextView mTextArtist;
     private TextView mTextStartTime;
     private TextView mTextEndTime;
+    private SeekBar mSeekBar;
     private PlayMusicService mPlayMusicService;
     private boolean mIsBound = false;
+    private Thread mThread;
 
     @Override
     protected void addEvent() {
@@ -66,6 +70,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mImageNext.setOnClickListener(this);
         mImagePreviousExpandable.setOnClickListener(this);
         mImagePrevious.setOnClickListener(this);
+        mImageSuffe.setOnClickListener(this);
+        mSeekBar.setOnSeekBarChangeListener(this);
+        mImageLoop.setOnClickListener(this);
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
@@ -182,6 +189,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mImagePlayPauseExpandable = findViewById(R.id.image_play_pause_expandable);
         mImageNextExpandable = findViewById(R.id.image_next_expandable);
         mImageLoop = findViewById(R.id.image_repeat);
+        mSeekBar = findViewById(R.id.seekbar_music);
     }
 
     @Override
@@ -216,6 +224,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.image_previous_expandable:
                 handlePrevious();
                 break;
+            case R.id.image_shuffe:
+                handleShuffe();
+                break;
+            case R.id.image_repeat:
+                handleRepeatClick();
+                break;
+        }
+    }
+
+    private void handleRepeatClick() {
+        if (!mIsBound) return;
+        String mode = mPlayMusicService.getPlayLoopMode();
+        switch (mode) {
+            case PlayMusicService.PLAY_MODE_LOOP_1:
+                mPlayMusicService.setPlayLoopMode(PlayMusicService.PLAY_MODE_NON_LOOP);
+                break;
+            case PlayMusicService.PLAY_MODE_LOOP_ALL:
+                mPlayMusicService.setPlayLoopMode(PlayMusicService.PLAY_MODE_LOOP_1);
+                break;
+            case PlayMusicService.PLAY_MODE_NON_LOOP:
+                mPlayMusicService.setPlayLoopMode(PlayMusicService.PLAY_MODE_LOOP_ALL);
+                break;
+        }
+    }
+
+    private void handleShuffe() {
+        if (mIsBound) {
+            if (mPlayMusicService.isShufferMode()) {
+                mPlayMusicService.setShufferMode(false);
+            } else {
+                mPlayMusicService.setShufferMode(true);
+            }
         }
     }
 
@@ -228,6 +268,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (!mIsBound) return;
         mPlayMusicService.next();
     }
+
     private void handlePlayPause() {
         if (mIsBound) {
             switch (mPlayMusicService.getState()) {
@@ -248,6 +289,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mImagePlayPauseExpandable.setImageResource(R.drawable.ic_pause);
         mTextTitle.setText(track.getTitle());
         mTextArtist.setText(track.getUser().getArtist());
+        mTextEndTime.setText(MusicUtils.converDuration(mPlayMusicService.getDuration()));
+        mSeekBar.setMax(mPlayMusicService.getDuration());
+        updateSeekBar();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mThread != null) {
+            mThread.interrupt();
+        }
+    }
+
+    private void updateSeekBar() {
+        mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mPlayMusicService.getCurrentPosition() != mPlayMusicService.getDuration()) {
+                    if (!Thread.currentThread().isInterrupted()) {
+                        int pos = mPlayMusicService.getCurrentPosition();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSeekBar.setProgress(pos);
+                                mTextStartTime.setText(MusicUtils.converDuration(pos));
+                            }
+                        });
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+            }
+        });
+        mThread.start();
     }
 
     @Override
@@ -268,9 +347,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void onBindSuccess(Track track, String state) {
-        mTextTitle.setText(track.getTitle());
-        mTextArtist.setText(track.getUser().getArtist());
+    public void onBindSuccess(Track track, String state, boolean isShuffer, String loopMode) {
+        if (track != null) {
+            mTextTitle.setText(track.getTitle());
+            mTextArtist.setText(track.getUser().getArtist());
+            mTextEndTime.setText(MusicUtils.converDuration(mPlayMusicService.getDuration()));
+        }
         switch (state) {
             case PlayMusicService.MUSIC_STATE_PLAYING:
                 mImagePlayPauseExpandable.setImageResource(R.drawable.ic_pause);
@@ -279,6 +361,49 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case PlayMusicService.MUSIC_STATE_STOPPING:
                 break;
         }
+        if (isShuffer) {
+            mImageSuffe.setImageResource(R.drawable.ic_shuffe);
+        } else {
+            mImageSuffe.setImageResource(R.drawable.ic_shuffe_gray);
+        }
+        switch (loopMode) {
+            case PlayMusicService.PLAY_MODE_LOOP_1:
+                mImageLoop.setImageResource(R.drawable.ic_repeat_one);
+                break;
+            case PlayMusicService.PLAY_MODE_LOOP_ALL:
+                mImageLoop.setImageResource(R.drawable.ic_repeate_white);
+                break;
+            case PlayMusicService.PLAY_MODE_NON_LOOP:
+                mImageLoop.setImageResource(R.drawable.ic_repeat_gray);
+                break;
+        }
+    }
+
+    @Override
+    public void onShuffleChange(boolean isShuffe) {
+        if (isShuffe) {
+            mImageSuffe.setImageResource(R.drawable.ic_shuffe);
+        } else mImageSuffe.setImageResource(R.drawable.ic_shuffe_gray);
+    }
+
+    @Override
+    public void onLoopModeChange(String loopMode) {
+        switch (loopMode) {
+            case PlayMusicService.PLAY_MODE_LOOP_1:
+                mImageLoop.setImageResource(R.drawable.ic_repeat_one);
+                break;
+            case PlayMusicService.PLAY_MODE_LOOP_ALL:
+                mImageLoop.setImageResource(R.drawable.ic_repeate_white);
+                break;
+            case PlayMusicService.PLAY_MODE_NON_LOOP:
+                mImageLoop.setImageResource(R.drawable.ic_repeat_gray);
+                break;
+        }
+    }
+
+    @Override
+    public void onMusicSeek() {
+        updateSeekBar();
     }
 
     public void setMusicPlayList(List<Track> tracks) {
@@ -293,14 +418,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             PlayMusicService.LocalBinder binder = (PlayMusicService.LocalBinder) iBinder;
             mPlayMusicService = binder.getService();
             mIsBound = true;
-            Log.d("kiemtra", "runnedmain");
             mPlayMusicService.setMusicListener(MainActivity.this);
             mPlayMusicService.bindSuccess();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-
         }
     };
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        if (b) {
+            mThread.interrupt();
+            mPlayMusicService.seek(i);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
 }
