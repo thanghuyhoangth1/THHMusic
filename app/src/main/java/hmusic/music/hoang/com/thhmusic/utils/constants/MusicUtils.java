@@ -46,6 +46,7 @@ public class MusicUtils {
             track.setDuration(duration);
             track.setDownloadable(false);
             track.setURI(uri);
+            track.setOffline(true);
             User user = new User();
             user.setArtist(artist);
             user.setArtistKey(artistkey);
@@ -80,7 +81,6 @@ public class MusicUtils {
                     albumprojection,
                     MediaStore.Audio.Albums.ARTIST + " like ? ", new String[]{name},
                     null);
-            Log.d("kiemtra", albumCursor.getCount() + "");
             if (albumCursor.getCount() > 1) {
                 albumCursor.moveToFirst();
                 artist.setArtisArt(albumCursor.getString(0));
