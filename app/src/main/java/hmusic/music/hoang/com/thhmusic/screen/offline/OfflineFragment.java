@@ -1,8 +1,10 @@
 package hmusic.music.hoang.com.thhmusic.screen.offline;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -18,9 +20,11 @@ import hmusic.music.hoang.com.thhmusic.data.model.Artist;
 import hmusic.music.hoang.com.thhmusic.data.model.Track;
 import hmusic.music.hoang.com.thhmusic.screen.BaseFragment;
 import hmusic.music.hoang.com.thhmusic.screen.OnRecyclerViewClickListener;
+import hmusic.music.hoang.com.thhmusic.screen.main.MainActivity;
 import hmusic.music.hoang.com.thhmusic.screen.offline.adapter.AlbumAdapter;
 import hmusic.music.hoang.com.thhmusic.screen.offline.adapter.ArtistAdapter;
 import hmusic.music.hoang.com.thhmusic.screen.online.adapter.TrackAdapter;
+import hmusic.music.hoang.com.thhmusic.service.PlayMusicService;
 
 public class OfflineFragment extends BaseFragment implements OfflineContract.View,
         OnRecyclerViewClickListener {
@@ -30,6 +34,7 @@ public class OfflineFragment extends BaseFragment implements OfflineContract.Vie
     private RecyclerView mRecyclerAlbum;
     private RecyclerView mRecyclerArtist;
     private ProgressBar mProgressBar;
+    private MainActivity mParentActivity;
 
     @Override
 
@@ -43,6 +48,7 @@ public class OfflineFragment extends BaseFragment implements OfflineContract.Vie
         mRecyclerAlbum = rootView.findViewById(R.id.recycler_album);
         mRecyclerArtist = rootView.findViewById(R.id.recycler_artist);
         mProgressBar = rootView.findViewById(R.id.progressbar);
+        mParentActivity = (MainActivity) getActivity();
         DaggerOffliineComponent.builder()
                 .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
                 .offlineModule(new OfflineModule())
@@ -100,6 +106,19 @@ public class OfflineFragment extends BaseFragment implements OfflineContract.Vie
 
     @Override
     public void onClick(List list, int pos) {
+
+        if (list.get(pos) instanceof Track) {
+            Intent intent = new Intent(getActivity(), PlayMusicService.class);
+            Bundle bundle = new Bundle();
+            Log.d("ahihi", ((Track) list.get(pos)).isOffline() + "");
+            bundle.putParcelable(PlayMusicService.INTENT_TRACK, (Track) list.get(pos));
+            bundle.putInt(PlayMusicService.INTENT_POSITION_TRACK, pos);
+            intent.putExtras(bundle);
+            getActivity().startService(intent);
+            if (mParentActivity != null) {
+                mParentActivity.setMusicPlayList((List<Track>) list);
+            }
+        }
 
     }
 }

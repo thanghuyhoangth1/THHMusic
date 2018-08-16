@@ -10,6 +10,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,6 +74,7 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
         Bundle bundle = intent.getExtras();
         mPositionTrack = bundle.getInt(INTENT_POSITION_TRACK);
         Track track = intent.getParcelableExtra(INTENT_TRACK);
+        Log.d("ahihi", "handleIntent: " + track.isOffline());
         playMusic(track);
     }
 
@@ -90,7 +92,12 @@ public class PlayMusicService extends Service implements MediaPlayer.OnPreparedL
         mMediaPlayer.reset();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
-            mMediaPlayer.setDataSource(MusicUtils.createUri(track.getURI()));
+            Log.d("kiemtra", track.isOffline() + "");
+            if (track.isOffline()) {
+                mMediaPlayer.setDataSource(track.getURI());
+            } else {
+                mMediaPlayer.setDataSource(MusicUtils.createUri(track.getURI()));
+            }
             mMediaPlayer.prepareAsync();
             mMediaPlayer.setOnPreparedListener(this);
         } catch (IOException e) {
